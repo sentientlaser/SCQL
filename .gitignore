@@ -1,0 +1,39 @@
+###### eclipse crap files
+.classpath
+.project
+.settings/*
+
+###### intellij crap files
+.idea/*
+
+###### output folders
+target/*
+project/target/*
+project/project/*
+
+###### OS generated crap files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+###### compiled objects (no feral deps)
+*.com
+*.class
+*.jar
+*.dll
+*.exe
+*.o
+*.so
+
+###### ignore packed stuff (checking in binaries is a necessary evil sometimes, but having it in an archive doesn't track changes properly)
+*.7z
+*.dmg
+*.gz
+*.iso
+*.rar
+*.tar
+*.zip
