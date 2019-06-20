@@ -17,7 +17,7 @@
 package org.shl.battlechatter.domain
 
 import java.nio.charset.Charset
-import java.time.ZoneId
+import java.time.{Instant, ZoneId}
 import java.util.UUID
 
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension
@@ -25,13 +25,9 @@ import com.vladsch.flexmark.ext.tables.TablesExtension
 import com.vladsch.flexmark.html.HtmlRenderer
 import com.vladsch.flexmark.parser.Parser
 import com.vladsch.flexmark.util.data.MutableDataSet
-import org.owasp.validator.html.{Policy, AntiSamy}
+import org.owasp.validator.html.{AntiSamy, Policy}
 
 import scala.collection.JavaConverters._
-
-object Test extends App {
-  println("foo")
-}
 
 object MarkdownRenderer {
   private val settings = new MutableDataSet {
@@ -46,7 +42,7 @@ object MarkdownRenderer {
 
   val parser: Parser = Parser.builder(settings).build
 
-  def apply(s:String) = renderer.render(parser.parse(s))
+  def apply(s: String): String = renderer.render(parser.parse(s))
 }
 
 object HtmlValidation {
@@ -54,10 +50,13 @@ object HtmlValidation {
   val policy = Policy.getInstance(this.getClass().getResourceAsStream(policyFileName))
   val antisamy = new AntiSamy
 
-  def apply(s:String) = {
+  def apply(s: String): (String, List[String]) = {
     val res = antisamy.scan(s, policy)
-    (res.getCleanHTML, res.getErrorMessages.asScala)
+    (res.getCleanHTML, res.getErrorMessages.asScala.toList)
   }
+}
+
+object MarkdownVerifier {
 }
 
 /**
@@ -67,48 +66,70 @@ object Domain {
   val UTC = ZoneId.of("UTC")
   val UTF8 = Charset.forName("UTF-8")
   val rootId = UUID.randomUUID()
-
 }
 
 object Types {
 
   implicit class MarkdownString(val text: String) {
-    Markdown.parser.parse("This is *Sparta*") // TODO: add a test failure here.
+    val (html, errors) = HtmlValidation(MarkdownRenderer(text))
   }
 
   type Email = javax.mail.internet.InternetAddress
 }
 
-trait UniqueId {
+
+trait UniqueId[T <: UniqueId[T]] {
   val id: UUID
+  val timestamp: Instant
+
+  def newid = UUID.randomUUID
+
+  def setID: T
+
+  def setTimestamp: T
+
+  def prep: T = {
+    verify()
+    (if (id == null) this.setID else this.asInstanceOf[T]).setTimestamp
+  }
+
+  def verify(): Unit = {}
 }
 
-trait UniqueInstanceId extends UniqueId {
+trait UniqueInstanceId[T <: UniqueInstanceId[T]] extends UniqueId[T] {
   val iid: UUID
+
+  def setIID: T
+
+  override def prep: T = super[UniqueId].prep.setIID
 }
 
-trait PersistenceOp[T <:UniqueId] {
+trait PersistenceOp[T <: UniqueId[T]] {
   // todo: add logging, etc
+
+  protected def doSave: T = {
+    this.asInstanceOf[T]
+  }
 }
 
-trait Saves[T <:UniqueId] extends PersistenceOp[T] {
-  def save:T
+trait Savable[T <: UniqueId[T]] extends PersistenceOp[T] with UniqueId[T] {
+  def save: T = this.prep.setTimestamp.asInstanceOf[Savable[T]].doSave
 }
 
-trait SavesOverwrite [T >: UniqueInstanceId <: UniqueId ] extends PersistenceOp[T] {
-  def save:T
+trait Deletable[T <: Deletable[T]] extends PersistenceOp[T] with UniqueId[T] {
+  val deleted: Boolean = false
+
+  def setDeleted: T
+
+  override def prep: T = super.prep.setDeleted
 }
 
-trait SavesUpdate [T <: UniqueInstanceId] extends PersistenceOp[T] {
-  def save:T
+trait Retrievable[T <: UniqueId[T], ST] {
+  def apply(u: UUID)
+  def apply(search: ST)
 }
 
-
-trait Deletes[T <: UniqueId] extends PersistenceOp[T] {
-  def delete:Boolean
-  val deleted:Boolean
+trait CassandraDecl {
+  val updates: Map[Int, (String, String)]
 }
 
-trait Retrieves[T <: UniqueId] extends PersistenceOp[T]{
-
-}

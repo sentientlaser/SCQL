@@ -26,6 +26,26 @@ object Dependencies {
     "org.owasp.antisamy" % "antisamy"
   ).map(_ % "1.5.8" % Compile )
 
+  val cassandraunit = Seq (
+    "org.cassandraunit" % "cassandra-unit"
+  ).map(_ % "3.11.2.0" % Test)
+
+  val datastax = Seq (
+    "com.datastax.oss" % "java-driver-core",
+  "com.datastax.oss" % "java-driver-query-builder"
+  ).map(_  % "4.0.1" % Compile)
+
+  val cassandraphantom = Seq (
+    //  "com.outworkers"   %% "phantom-sbt",
+    //  "com.outworkers"   %% "phantom-example",
+    //  "com.outworkers"   %% "phantom-finagle",
+    //  "com.outworkers"   %% "phantom-thrift",
+    //  "com.outworkers"   %% "phantom-streams",
+    "com.outworkers"   %% "phantom-jdk8",
+    "com.outworkers"   %% "phantom-connectors",
+    "com.outworkers"   %% "phantom-dsl"
+  ).map(_ % "2.41.0" % Compile)
+
   val liquibase = Seq(
     "org.liquibase" % "liquibase-core", // exclude ("ch.qos.logback", "logback-classic")
   ).map(_ % "3.6.2" % Compile)

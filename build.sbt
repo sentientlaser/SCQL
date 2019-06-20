@@ -20,5 +20,6 @@ libraryDependencies ++= {
     javamail ++
     flexmark ++
     antisamy ++
+    datastax ++
     Nil
 }

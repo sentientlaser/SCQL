@@ -16,78 +16,110 @@
 
 package org.shl.battlechatter.domain
 
+
 import java.net.URL
-import java.time.{ZoneId, ZonedDateTime}
+import java.nio.ByteBuffer
+import java.security.{MessageDigest, SecureRandom}
+
 import java.util.UUID
+import java.time.{Instant, ZoneId}
 
 
 case class UserPrinciple(
-                          username: String,
-                          password: Option[Array[Byte]],
-                          userId: UUID = UUID.randomUUID(),
-                          saltProvider: UUID => Array[Byte] = User.saltProvider
-                        ) {
-//  def this(
-//            username: String,
-//            password: Option[String],
-//            id: UUID = UUID.randomUUID(),
-//            saltProvider: UUID => Array[Byte] = User.saltProvider
-//          ) = this(username, password.map(_.getBytes(Domain.UTF8)), id, saltProvider)
+  override val id: UUID,
+  override val timestamp: Instant,
+  username: String,
+  password: String,
+  digestedPassword: Array[Byte]
+) extends UniqueId[UserPrinciple] with Savable[UserPrinciple] {
+  override def setID = this.copy(id = newid)
+  override def setTimestamp = this.copy(timestamp = Instant.now())
+  override def prep = super[UniqueId].prep.digest
+  def digest = this.copy(digestedPassword = UserPrinciple.digest(id, password.getBytes()), password = null)
 }
 
-case object User {
-  val saltProvider: UUID => Array[Byte] = { in: UUID =>
-    Range(0, 128).map{_.asInstanceOf[Byte]}.toArray[Byte] // scalastyle:ignore null
+object UserPrinciple {
+  private def saltProvider(in: UUID) = Range(0, 128)
+    .map {_.asInstanceOf[Byte]}
+    .toArray[Byte]
+
+  private val digester = MessageDigest.getInstance(s"SHA-${Salt.saltWidth}")
+  def digest(userId: UUID, pass: Array[Byte]) = digester.digest(pass ++ saltProvider(userId))
+}
+
+
+case class Salt(
+  override val id: UUID,
+  override val timestamp: Instant,
+  salt: ByteBuffer = Salt()
+) extends UniqueId[Salt] with Savable[Salt] {
+  override def setID = this.copy(id = newid)
+  override def setTimestamp = this.copy(timestamp = Instant.now())
+}
+
+object Salt {
+  private val secRand = SecureRandom.getInstanceStrong
+  val saltWidth = 512
+  def apply() = {
+    val ra = new Array[Byte](saltWidth)
+    secRand.nextBytes(ra)
+    ByteBuffer.wrap(ra)
   }
 }
 
-case class UserProfile(
-                        override val id: UUID, // Doubles userid
-                        homeTZ: ZoneId,
-                        email:Types.Email,
-                        avatar:URL,
-                        bio:Types.MarkdownString = "",
-                        override val iid: UUID = UUID.randomUUID()
-                      ) extends UniqueInstanceId
 
-case class Post(
-                 override val id: UUID,
-                 override val iid: UUID,
-                 userID: UUID,
-                 text: Types.MarkdownString,
-                 timestamp: ZonedDateTime = ZonedDateTime.now(Domain.UTC),
-                 parentId: UUID = Domain.rootId
-               ) extends UniqueInstanceId {
+//case class UserProfile(
+//  override val id: UUID, // Doubles userid
+//  override val iid: UUID,
+//  override val timestamp: Instant,
+//  homeTZ: ZoneId,
+//  email: Types.Email,
+//  avatar: URL,
+//  bio: Types.MarkdownString = "",
+//) extends UniqueInstanceId[UserProfile] {
+//  override def setIID: UserProfile = this.copy(iid = newid)
+//  override def setID: UserProfile = this.copy(id = newid)
+//  override def setTimestamp: UserProfile = this.copy(timestamp = Instant.now())
+//}
 
-}
-
-abstract class Reaction(
-                         override val id: UUID,
-                         override val iid: UUID,
-                         val userId:UUID,
-                         val postId:UUID,
-                         val valence:Int) extends UniqueInstanceId
-
-case class UpVote(
-                   override val id: UUID,
-                   override val iid: UUID,
-                   override val userId: UUID,
-                   override val postId: UUID
-                 ) extends Reaction(id, iid, userId, postId, 1)
-
-case class DownVote(
-                     override val id: UUID,
-                     override val iid: UUID,
-                     override val userId: UUID,
-                     override val postId: UUID
-                   ) extends Reaction(id, iid, userId, postId, -1)
-
-
-case class MehVote(
-                    override val id: UUID,
-                    override val iid: UUID,
-                    override val userId: UUID,
-                    override val postId: UUID
-                  ) extends Reaction(id, iid, userId, postId, 0)
-
+//case class Post(
+//                 override val id: UUID,
+//                 override val iid: UUID,
+//                 userID: UUID,
+//                 text: Types.MarkdownString,
+//                 timestamp: ZonedDateTime = ZonedDateTime.now(Domain.UTC),
+//                 parentId: UUID = Domain.rootId
+//               ) extends UniqueInstanceId {
+//
+//}
+//
+//abstract class Reaction(
+//                         override val id: UUID,
+//                         override val iid: UUID,
+//                         val userId:UUID,
+//                         val postId:UUID,
+//                         val valence:Int) extends UniqueInstanceId
+//
+//case class UpVote(
+//                   override val id: UUID,
+//                   override val iid: UUID,
+//                   override val userId: UUID,
+//                   override val postId: UUID
+//                 ) extends Reaction(id, iid, userId, postId, 1)
+//
+//case class DownVote(
+//                     override val id: UUID,
+//                     override val iid: UUID,
+//                     override val userId: UUID,
+//                     override val postId: UUID
+//                   ) extends Reaction(id, iid, userId, postId, -1)
+//
+//
+//case class MehVote(
+//                    override val id: UUID,
+//                    override val iid: UUID,
+//                    override val userId: UUID,
+//                    override val postId: UUID
+//                  ) extends Reaction(id, iid, userId, postId, 0)
+//
 
