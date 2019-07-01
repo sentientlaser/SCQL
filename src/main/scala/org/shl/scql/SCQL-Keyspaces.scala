@@ -16,9 +16,14 @@
 
 package org.shl.scql
 
-trait KeyspaceDecl extends Statement with NamedSchemaObject {
-  protected val $$renderedString :String
-  override def toString = $$renderedString
+
+trait HasKeyspace {
+  val keyspace$$:KeyspaceDecl
+}
+
+trait KeyspaceDecl extends Statement with SelfNamedObject {
+  protected val renderedString$$ :String
+  override def toString = renderedString$$
 }
 
 trait AlterKeyspace extends KeyspaceDecl {
@@ -35,17 +40,13 @@ trait AlterKeyspace extends KeyspaceDecl {
   protected val $$replicationStrategy: ReplicationStrategy
   protected val $$durableWrites: Boolean
   protected final lazy val $$durableWritesClause = if ($$durableWrites) "AND DURABLE_WRITES = true" else ""
-  protected override lazy val $$renderedString = $$minify(s"ALTER KEYSPACE ${$$name} ${$$replicationStrategy} ${$$durableWritesClause}")
+  protected override lazy val renderedString$$ = $$minify(s"ALTER KEYSPACE ${name$$} ${$$replicationStrategy} ${$$durableWritesClause}")
 }
 
 trait CreateKeyspace extends AlterKeyspace with IfNotExistsClause{
-  protected override lazy val $$renderedString = $$minify(s"CREATE KEYSPACE ${$$ifNotExistsClause} ${$$name} ${$$replicationStrategy} ${$$durableWritesClause}")
+  protected override lazy val renderedString$$ = $$minify(s"CREATE KEYSPACE ${ifNotExistsClause$$} ${name$$} ${$$replicationStrategy} ${$$durableWritesClause}")
 }
 
 trait DropKeyspace extends KeyspaceDecl {
-  protected override lazy val $$renderedString = $$minify(s"DROP KEYSPACE ${$$name}")
-}
-
-trait HasKeyspace {
-  val $$keyspace:KeyspaceDecl
+  protected override lazy val renderedString$$ = $$minify(s"DROP KEYSPACE ${name$$}")
 }

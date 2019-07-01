@@ -33,13 +33,6 @@ trait UnionType{
 
   def unexpected : Nothing = sys.error("Unexpected invocation")
 
-  trait <:!<[A, B]
-
-  // Uses ambiguity to rule out the cases we're trying to exclude
-  implicit def nsub[A, B] : A <:!< B = null
-  implicit def nsubAmbig1[A, B >: A] : A <:!< B = unexpected
-  implicit def nsubAmbig2[A, B >: A] : A <:!< B = unexpected
-
   private type ¬[A] = A => Nothing
   private type ∨[T, U] = ¬[¬[T] with ¬[U]]
   private type ¬¬[A] = ¬[¬[A]]
@@ -50,8 +43,8 @@ trait UnionType{
 }
 
 trait IfNotExistsClause {
-  protected val $$ifNotExists: Boolean = true
-  protected final lazy val $$ifNotExistsClause = if ($$ifNotExists) "IF NOT EXISTS" else ""
+  protected val ifNotExists$$: Boolean = true
+  protected final lazy val ifNotExistsClause$$ = if (ifNotExists$$) "IF NOT EXISTS" else ""
 }
 
 object NestedObjectReflector {
@@ -63,21 +56,21 @@ trait NestedObjectReflector {
 
   import scala.reflect.runtime.universe.typeOf
   import scala.reflect.runtime.universe.TypeTag
-  protected final val $$mirror = NestedObjectReflector.mirror
+  protected final val mirror$$ = NestedObjectReflector.mirror
 
-  protected final def $$self = $$mirror.reflect(this).symbol.typeSignature
+  protected final def self$$ = mirror$$.reflect(this).symbol.typeSignature
 
-  protected final def $$modules[T: TypeTag]:Set[T] = $$self
+  protected final def modules$$[T: TypeTag]:Set[T] = self$$
     .members
     .filter(_.isModule)
     .filter(_.typeSignature <:< typeOf[T])
     .map(_.asModule)
-    .map($$mirror.reflectModule(_))
+    .map(mirror$$.reflectModule(_))
     .map(_.instance.asInstanceOf[T])
     .toSet
 }
 
-trait NamedSchemaObject {
-  lazy val $$name:String = this.getClass.getSimpleName.replaceAll("\\$$", "") //TODO: better prefix for inner vals, so there is no namecollisions
+trait SelfNamedObject {
+  lazy val name$$:String = this.getClass.getSimpleName.replaceAll("\\$$", "") //TODO: better prefix for inner vals, so there is no namecollisions
 }
 

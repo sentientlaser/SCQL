@@ -33,109 +33,109 @@ sealed trait TableParamDecl extends Statement {
 trait ColumnDecls extends NestedObjectReflector{
 
 
-  sealed abstract class ColumnDecl(val partitionKey: Boolean = false, val clusteringKey: Boolean = false) extends TableParamDecl with NamedSchemaObject {
-    val $$typeLabel: String
-    val $$typeClass: Class[_]
+  sealed abstract class ColumnDecl(val partitionKey: Boolean = false, val clusteringKey: Boolean = false) extends TableParamDecl with SelfNamedObject {
+    val typeLabel$$: String
+    val typeClass$$: Class[_]
 
-    final override val toString = s"${$$name} ${$$typeLabel}"
-    final val $$toStringInlineKeyDecl = s"${$$name} ${$$typeLabel} PRIMARY KEY"
+    final override val toString = s"${name$$} ${typeLabel$$}"
+    final val toStringInlineKeyDecl$$ = s"${name$$} ${typeLabel$$} PRIMARY KEY"
   }
 
 
   abstract class AsciiColumn(override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "ascii"
-    final override val $$typeClass = classOf[String]
+    final override val typeLabel$$ = "ascii"
+    final override val typeClass$$ = classOf[String]
   }
 
   abstract class BigintColumn(override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "bigint"
-    final override val $$typeClass = classOf[BigInt]
+    final override val typeLabel$$ = "bigint"
+    final override val typeClass$$ = classOf[BigInt]
   }
 
   abstract class BlobColumn(override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "blob"
-    final override val $$typeClass = classOf[Array[Byte]]
+    final override val typeLabel$$ = "blob"
+    final override val typeClass$$ = classOf[Array[Byte]]
   }
 
   abstract class BooleanColumn(override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "Boolean"
-    final override val $$typeClass = classOf[Array[Byte]]
+    final override val typeLabel$$ = "Boolean"
+    final override val typeClass$$ = classOf[Array[Byte]]
   }
 
   abstract class CounterColumn(override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "counter"
-    final override val $$typeClass = classOf[Int]
+    final override val typeLabel$$ = "counter"
+    final override val typeClass$$ = classOf[Int]
   }
 
   abstract class DecimalColumn(override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "decimal"
-    final override val $$typeClass = classOf[Double] // TODO: check this
+    final override val typeLabel$$ = "decimal"
+    final override val typeClass$$ = classOf[Double] // TODO: check this
 
   }
 
   abstract class DoubleColumn(override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "double"
-    final override val $$typeClass = classOf[Double]
+    final override val typeLabel$$ = "double"
+    final override val typeClass$$ = classOf[Double]
   }
 
   abstract class FloatColumn(override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "float"
-    final override val $$typeClass = classOf[Float]
+    final override val typeLabel$$ = "float"
+    final override val typeClass$$ = classOf[Float]
   }
 
   abstract class InetColumn(override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "inet"
-    final override val $$typeClass = classOf[InetAddress]
+    final override val typeLabel$$ = "inet"
+    final override val typeClass$$ = classOf[InetAddress]
   }
 
   abstract class IntColumn(override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "int"
-    final override val $$typeClass = classOf[Int]
+    final override val typeLabel$$ = "int"
+    final override val typeClass$$ = classOf[Int]
   }
 
   abstract class TextColumn(override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "text"
-    final override val $$typeClass = classOf[String]
+    final override val typeLabel$$ = "text"
+    final override val typeClass$$ = classOf[String]
   }
 
   abstract class TimestampColumn(override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "timestamp"
-    final override val $$typeClass = classOf[Instant]
+    final override val typeLabel$$ = "timestamp"
+    final override val typeClass$$ = classOf[Instant]
   }
 
   abstract class TimeuuidColumn(override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "timeuuid"
-    final override val $$typeClass = classOf[UUID]
+    final override val typeLabel$$ = "timeuuid"
+    final override val typeClass$$ = classOf[UUID]
   }
 
   abstract class UuidColumn(override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "uuid"
-    final override val $$typeClass = classOf[UUID]
+    final override val typeLabel$$ = "uuid"
+    final override val typeClass$$ = classOf[UUID]
   }
 
   abstract class VarcharColumn(override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "varchar"
-    final override val $$typeClass = classOf[String]
+    final override val typeLabel$$ = "varchar"
+    final override val typeClass$$ = classOf[String]
   }
 
   abstract class VarintColumn(override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "varint"
-    final override val $$typeClass = classOf[Long]
+    final override val typeLabel$$ = "varint"
+    final override val typeClass$$ = classOf[Long]
   }
 
   abstract class ListColumn[T :ClassTag](override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "list"
-    final override val $$typeClass = classOf[List[T]]
+    final override val typeLabel$$ = "list"
+    final override val typeClass$$ = classOf[List[T]]
   }
 
   abstract class MapColumn[K :ClassTag, V :ClassTag](override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "map"
-    final override val $$typeClass = classOf[Map[K, V]]
+    final override val typeLabel$$ = "map"
+    final override val typeClass$$ = classOf[Map[K, V]]
   }
 
   abstract class SetColumn[T :ClassTag](override val partitionKey: Boolean = false, override val clusteringKey: Boolean = false) extends ColumnDecl(partitionKey, clusteringKey) {
-    final override val $$typeLabel = "set"
-    final override val $$typeClass = classOf[Set[T]]
+    final override val typeLabel$$ = "set"
+    final override val typeClass$$ = classOf[Set[T]]
   }
 
 }
@@ -262,7 +262,7 @@ trait AlterableTableOptions extends TableOptions with UnionType {
 }
 
 
-trait TableDecl extends Statement with NamedSchemaObject with HasKeyspace with NestedObjectReflector {
+trait TableDecl extends Statement with SelfNamedObject with HasKeyspace with NestedObjectReflector {
 
   class column extends StaticAnnotation // todo: at the moment just a semaphore
 
@@ -270,14 +270,14 @@ trait TableDecl extends Statement with NamedSchemaObject with HasKeyspace with N
 
 abstract class CreateTable extends TableDecl with IfNotExistsClause with ColumnDecls with AlterableTableOptions {
 
-  val $$useInlinePrimaryKeyDecls = false
+  val useInlinePrimaryKeyDecls$$ = false
 
 
 
-  final lazy val $$columns:Set[ColumnDecl] = $$modules[ColumnDecl]
+  final lazy val columns$$:Set[ColumnDecl] = modules$$[ColumnDecl]
 
-  final lazy val $$partitionKeyDecls = $$columns.filter(_.partitionKey)
-  final lazy val $$clusteringKeyDecls = $$columns.filter(_.clusteringKey)
+  final lazy val partitionKeyDecls$$ = columns$$.filter(_.partitionKey)
+  final lazy val clusteringKeyDecls$$ = columns$$.filter(_.clusteringKey)
 
   sealed trait PrimaryKeyDecl extends TableParamDecl {
 
@@ -285,7 +285,7 @@ abstract class CreateTable extends TableDecl with IfNotExistsClause with ColumnD
 
   case class SimpleKeyDecl(val column:ColumnDecl) extends PrimaryKeyDecl {
     override def toString = {
-      val colName = column.$$name
+      val colName = column.name$$
       s"PRIMARY KEY (${colName})"
     }
   }
@@ -293,8 +293,8 @@ abstract class CreateTable extends TableDecl with IfNotExistsClause with ColumnD
 
   case class ClusteringPartitionKeyDecl(val partitionColumns:Set[ColumnDecl], val clusteringKeys:Set[ColumnDecl]) extends PrimaryKeyDecl {
     override def toString = {
-      val pColNames = partitionColumns.map(_.$$name).mkString(", ")
-      val cColNames = partitionColumns.map(_.$$name).mkString(", ")
+      val pColNames = partitionColumns.map(_.name$$).mkString(", ")
+      val cColNames = partitionColumns.map(_.name$$).mkString(", ")
       s"PRIMARY KEY ((${pColNames}), (${cColNames}))"
     }
   }
@@ -303,17 +303,17 @@ abstract class CreateTable extends TableDecl with IfNotExistsClause with ColumnD
 
   sealed abstract class SortDirection(column: ColumnDecl) {
     // TODO: check columns later?
-    if (!$$columns.contains(column)) throw new Exception(s"Column ${column.$$name} does not exist in table ${$$name}")
-    protected val $$dirString:String
-    private lazy val $$asString = s"${column.$$name} ${$$dirString}"
-    override final def toString = $$asString
+    if (!columns$$.contains(column)) throw new Exception(s"Column ${column.name$$} does not exist in table ${name$$}")
+    protected val dirString$$:String
+    private lazy val asString$$ = s"${column.name$$} ${dirString$$}"
+    override final def toString = asString$$
   }
 
   case class Asc(column: ColumnDecl) extends SortDirection(column) {
-    override protected val $$dirString = "ASC"
+    override protected val dirString$$ = "ASC"
   }
   case class Desc(column: ColumnDecl) extends SortDirection(column) {
-    override protected val $$dirString = "DESC"
+    override protected val dirString$$ = "DESC"
   }
 
   case class ClusteringOrder(decls: SortDirection*) extends TableOption{
@@ -328,32 +328,32 @@ abstract class CreateTable extends TableDecl with IfNotExistsClause with ColumnD
     override final def toString = s"COMPACT STORAGE"
   }
 
-  final lazy val $$keyDecl = {
-    ($$partitionKeyDecls.size, $$clusteringKeyDecls.size) match {
-      case (0, _) =>  throw new Exception(s"You must declare a primary key on table ${$$name}")
-      case (x, y) if (x >= 1 || y >= 1) => ClusteringPartitionKeyDecl($$partitionKeyDecls, $$clusteringKeyDecls)
-      case (1, _) => SimpleKeyDecl($$partitionKeyDecls.head)
+  final lazy val keyDecl$$ = {
+    (partitionKeyDecls$$.size, clusteringKeyDecls$$.size) match {
+      case (0, _) =>  throw new Exception(s"You must declare a primary key on table ${name$$}")
+      case (x, y) if (x >= 1 || y >= 1) => ClusteringPartitionKeyDecl(partitionKeyDecls$$, clusteringKeyDecls$$)
+      case (1, _) => SimpleKeyDecl(partitionKeyDecls$$.head)
     }
   }
 
-  private lazy val $$columnDeclString = (if ($$useInlinePrimaryKeyDecls) {
-    if ($$partitionKeyDecls.size == 0) throw new Exception(s"You must declare a single primary key on table ${$$name} to use inline notation for partition keys")
-    $$columns.map(_.$$toStringInlineKeyDecl)
+  private lazy val columnDeclString$$ = (if (useInlinePrimaryKeyDecls$$) {
+    if (partitionKeyDecls$$.size == 0) throw new Exception(s"You must declare a single primary key on table ${name$$} to use inline notation for partition keys")
+    columns$$.map(_.toStringInlineKeyDecl$$)
   } else {
-    ($$columns.toList :+ $$keyDecl)
+    (columns$$.toList :+ keyDecl$$)
   }).mkString(",\n")
 
 
-  val $$options: Set[TableOption] = Set()
+  val options$$: Set[TableOption] = Set()
 
   override val toString =
-    s"""CREATE TABLE ${$$ifNotExistsClause} ${$$keyspace.$$name}.${$$name} (
-       | ${$$columnDeclString}
-       ) ${$$options.asListString}""".stripMargin
+    s"""CREATE TABLE ${ifNotExistsClause$$} ${keyspace$$.name$$}.${name$$} (
+       | ${columnDeclString$$}
+       ) ${options$$.asListString}""".stripMargin
 }
 
 
-abstract class AlterTable extends TableDecl with ColumnDecls with AlterableTableOptions {
+abstract class AlterTable extends TableDecl with ColumnDecls with AlterableTableOptions with HasKeyspace {
   trait ColumnOperation
 
   case class Add(columnDecls: ColumnDecl*) extends ColumnOperation {
@@ -363,7 +363,7 @@ abstract class AlterTable extends TableDecl with ColumnDecls with AlterableTable
 
 
   case class Drop(columnDecls: ColumnDecl*) extends ColumnOperation {
-    def colString = columnDecls.map(_.$$name).mkString(", ")
+    def colString = columnDecls.map(_.name$$).mkString(", ")
     override def toString = s"DROP ${colString}"
   }
 
@@ -371,7 +371,7 @@ abstract class AlterTable extends TableDecl with ColumnDecls with AlterableTable
     override def toString = ""
   }
 
-  private case class AlterDecl(columns: ColumnOperation, options: Set[TableOption])
+  protected case class AlterDecl(columns: ColumnOperation, options: Set[TableOption])
 
   protected implicit def columnOperationToAlterDecl(c:ColumnOperation) = AlterDecl(c, Set())
   protected implicit def optionSetToAlterDecl(c:Set[TableOption]) = AlterDecl(NoColumnAlterations, c)
@@ -379,7 +379,7 @@ abstract class AlterTable extends TableDecl with ColumnDecls with AlterableTable
   val alterations:AlterDecl
 
   override def toString =
-    s"""ALTER TABLE ${$$keyspace.$$name}.${$$name} (
+    s"""ALTER TABLE ${keyspace$$.name$$}.${name$$} (
        | ${alterations.columns}
-       ) ${alterations.options}""".stripMargin // XXX: was here
+       ) ${alterations.options}""".stripMargin
 }

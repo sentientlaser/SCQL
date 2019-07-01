@@ -1,35 +1,36 @@
 package org.shl.scql
 
 
-import scala.annotation.elidable
-
-@elidable(level = 1000)
-object Foo extends CreateKeyspace {
+object Foo extends CreateKeyspace with FooSpace{
   lazy val $$replicationStrategy = SimpleReplicationStrategy()
   lazy val $$durableWrites = true
 }
 
+trait FooSpace extends HasKeyspace {
 
-@elidable(level = 1000)
-object Bar extends CreateTable with NestedObjectReflector {
+  lazy val keyspace$$ = Foo
+
+}
+
+
+object Bar extends CreateTable with FooSpace{
 
   @column object firstName extends TextColumn(partitionKey = true)
 
   @column object lastName extends TextColumn(clusteringKey = true)
 
-  @column object email extends TextColumn()
+  @column object email extends TextColumn
 
-  @column object someNumber extends IntColumn()
+  @column object someNumber extends IntColumn
 
-  lazy val $$keyspace = Foo
+  override val options$$ = Comment("Bar") and CompactStorage and ClusteringOrder(Asc(firstName), Desc(someNumber))
 
-  override val $$options = Comment("Bar") and CompactStorage and ClusteringOrder(Asc(firstName), Desc(someNumber))
-
+  @expand class Type
 }
 
-@elidable(level = 1000)
-object Example extends App {
+object Bar2 extends AlterTable with FooSpace {
 
-  println(Bar.$$optionsToString)
+  object someGarbage extends TextColumn
+  override val alterations = Add(someGarbage)
 }
 

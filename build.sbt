@@ -1,12 +1,14 @@
 import Dependencies._
 
 organization := "org.shl"
-name := "BattleChatter"
+name := "scql"
 version := "0.0.1"
 
 scalaVersion := "2.12.8"
 
-coverageEnabled := true
+logLevel := Level.Debug
+
+coverageEnabled := false
 
 scalastyleConfig := baseDirectory.value / "project/scalastyle-config.xml"
 
