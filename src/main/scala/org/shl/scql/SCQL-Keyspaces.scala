@@ -18,32 +18,36 @@ package org.shl.scql
 
 
 trait HasKeyspace {
-  val keyspace$$:KeyspaceDecl
+  val keyspace$$: KeyspaceDecl
 }
 
 trait KeyspaceDecl extends Statement with SelfNamedObject {
-  protected val renderedString$$ :String
+  protected val renderedString$$: String
   override def toString = renderedString$$
 }
 
 trait AlterKeyspace extends KeyspaceDecl {
+
   sealed trait ReplicationStrategy
+
   case class SimpleReplicationStrategy(val replicationFactor: Int = 1) extends ReplicationStrategy {
     override def toString = s"WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication_factor' : ${replicationFactor}}"
   }
+
   case class NetworkTopologyStrategy(val datacenterFactors: List[(String, String)]) extends ReplicationStrategy {
     override def toString = {
       datacenterFactors.map { c => s"'${c}._1':${c}._2" }.mkString(", ")
       s"WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication_factor' : ${datacenterFactors}}"
     }
   }
+
   protected val $$replicationStrategy: ReplicationStrategy
   protected val $$durableWrites: Boolean
   protected final lazy val $$durableWritesClause = if ($$durableWrites) "AND DURABLE_WRITES = true" else ""
   protected override lazy val renderedString$$ = $$minify(s"ALTER KEYSPACE ${name$$} ${$$replicationStrategy} ${$$durableWritesClause}")
 }
 
-trait CreateKeyspace extends AlterKeyspace with IfNotExistsClause{
+trait CreateKeyspace extends AlterKeyspace with IfNotExistsClause {
   protected override lazy val renderedString$$ = $$minify(s"CREATE KEYSPACE ${ifNotExistsClause$$} ${name$$} ${$$replicationStrategy} ${$$durableWritesClause}")
 }
 

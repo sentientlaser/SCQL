@@ -16,10 +16,19 @@
 
 package org.shl.scql
 
+import com.datastax.oss.driver.api.core.CqlSession
+import com.datastax.oss.driver.api.core.cql.{BoundStatement, PreparedStatement}
+
+
+import scala.reflect.ClassTag
+import scala.reflect.classTag
+import scala.util.parsing.combinator.RegexParsers
+
 trait Statement {
   /**
     * the `$$` prefix is to prevent any possible conflict with objects and clauses that are intended to name schema
     * objects (because $$ is a poor choise for column names given it's a bad column name)
+    *
     * @param s
     * @return
     */
@@ -27,50 +36,14 @@ trait Statement {
   @inline def $$minify(x: (String, String)): (String, String) = ($$minify(x._1), $$minify(x._2))
 }
 
-trait UnionType{
-  // Credit to Miles Sabin for this little bit of awesome.
-  // https://milessabin.com/blog/2011/06/09/scala-union-types-curry-howard/
-
-  def unexpected : Nothing = sys.error("Unexpected invocation")
-
-  private type ¬[A] = A => Nothing
-  private type ∨[T, U] = ¬[¬[T] with ¬[U]]
-  private type ¬¬[A] = ¬[¬[A]]
-  type |[T, U] = { type union[X] = ¬¬[X] <:< (T ∨ U) }
-
-
-
-}
-
 trait IfNotExistsClause {
   protected val ifNotExists$$: Boolean = true
   protected final lazy val ifNotExistsClause$$ = if (ifNotExists$$) "IF NOT EXISTS" else ""
 }
 
-object NestedObjectReflector {
-  import scala.reflect.runtime.universe
-  val mirror = universe.runtimeMirror(getClass.getClassLoader)
-}
-
-trait NestedObjectReflector {
-
-  import scala.reflect.runtime.universe.typeOf
-  import scala.reflect.runtime.universe.TypeTag
-  protected final val mirror$$ = NestedObjectReflector.mirror
-
-  protected final def self$$ = mirror$$.reflect(this).symbol.typeSignature
-
-  protected final def modules$$[T: TypeTag]:Set[T] = self$$
-    .members
-    .filter(_.isModule)
-    .filter(_.typeSignature <:< typeOf[T])
-    .map(_.asModule)
-    .map(mirror$$.reflectModule(_))
-    .map(_.instance.asInstanceOf[T])
-    .toSet
-}
 
 trait SelfNamedObject {
-  lazy val name$$:String = this.getClass.getSimpleName.replaceAll("\\$$", "") //TODO: better prefix for inner vals, so there is no namecollisions
+  lazy val name$$: String = this.getClass.getSimpleName.replaceAll("\\$$", "")
 }
 
+abstract class VersionedDecl(val version: String)

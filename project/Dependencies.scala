@@ -32,8 +32,8 @@ object Dependencies {
 
   val datastax = Seq (
     "com.datastax.oss" % "java-driver-core",
-  "com.datastax.oss" % "java-driver-query-builder"
-  ).map(_  % "4.0.1" % Compile)
+    "com.datastax.oss" % "java-driver-query-builder"
+  ).map(_  % "4.1.0" % Compile)
 
   val cassandraphantom = Seq (
     //  "com.outworkers"   %% "phantom-sbt",
