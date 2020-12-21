@@ -99,12 +99,12 @@ object Nodes {
 
   object Statements {
 
-    private trait IfNotExistsSupport {
+    sealed trait IfNotExistsSupport {
       val ifNotExists:Boolean
       def ifNotExistsToString = if (ifNotExists) "IF NOT EXISTS" else ""
     }
 
-    private trait OptionsSupport {
+    sealed trait OptionsSupport {
 
       val options:Option[List[Options.Option]]
       def optionsToString = options.map(opt => " WITH " + opt.map(toStringF).mkString(" AND ")).getOrElse("")
@@ -128,7 +128,7 @@ object Nodes {
       override def toString = s"CREATE KEYSPACE ${ifNotExistsToString} ${name} ${optionsToString}"
     }
     object CreateKeyspace {
-      def apply(name:String, ifNotExists:Boolean, options:Option[List[Options.Option]]) = CreateKeyspace(SchemaName(name), ifNotExists, options)
+      def apply(name:String, ifNotExists:Boolean, options:Option[List[Options.Option]]):CreateKeyspace = CreateKeyspace(SchemaName(name), ifNotExists, options)
     }
 
 }

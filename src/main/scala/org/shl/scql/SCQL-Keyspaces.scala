@@ -16,6 +16,8 @@
 
 package org.shl.scql
 
+import scala.annotation.elidable
+
 
 trait HasKeyspace {
   val keyspace$$: KeyspaceDecl

@@ -33,7 +33,7 @@ object Utils {
         def bind[T :ClassTag](stmt:BoundStatement, binding:(T, Int)) ={
           val c = classTag[T]
           val (value, ind) = binding
-          boundStmt.set(ind + 1, value, c.runtimeClass)
+          boundStmt.set(ind + 1, value, c.runtimeClass.asInstanceOf[Class[T]])
         }
         boundStmt = args.zipWithIndex.foldLeft(preparedStmt.bind())(bind)
         boundStmt
